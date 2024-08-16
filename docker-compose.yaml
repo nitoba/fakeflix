@@ -1,0 +1,17 @@
+version: '3.9'
+
+name: 'fakeflix'
+
+services:
+  db:
+    container_name: fakeflix_db
+    image: bitnami/postgresql:16.3.0
+    ports:
+      - '5432:5432'
+    volumes:
+      - '.data:/bitnami/postgres/data'
+    environment:
+      # ALLOW_EMPTY_PASSWORD is recommended only for development.
+      - POSTGRES_USER=docker
+      - POSTGRES_PASSWORD=docker
+      - POSTGRES_DATABASE=fakeflix

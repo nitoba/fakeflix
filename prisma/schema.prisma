@@ -1,0 +1,22 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Video {
+  id                String   @id
+  title             String
+  description       String
+  url               String
+  sizeInKb          Int      @map("size_in_kb")
+  durationInSeconds Int      @map("duration_in_seconds")
+  thumbnailUrl      String?  @map("thumbnail_url")
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  @@map("videos")
+}
