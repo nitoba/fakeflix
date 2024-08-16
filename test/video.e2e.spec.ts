@@ -114,4 +114,38 @@ describe('VideoController (e2e)', () => {
         statusCode: 400,
       })
   })
+
+  describe('VideoController (e2e) Streaming', () => {
+    test('should streams a video', async () => {
+      const { body: sampleVideo } = await request(app.getHttpServer())
+        .post('/video')
+        .attach('video', './test/fixtures/sample.mp4')
+        .attach('thumbnail', './test/fixtures/sample.jpg')
+        .field('title', 'Test Video')
+        .field('description', 'This is a test video')
+        .expect(HttpStatus.CREATED)
+
+      const fileSize = 1430145
+      const range = `bytes=0-${fileSize - 1}`
+
+      const res = await request(app.getHttpServer())
+        .get(`/stream/${sampleVideo.id}`)
+        .set('Range', range)
+        .expect(HttpStatus.PARTIAL_CONTENT)
+
+      expect(res.headers['content-type']).toBe('video/mp4')
+      expect(res.headers['content-length']).toBe(fileSize.toString())
+      expect(res.headers['accept-ranges']).toBe('bytes')
+
+      expect(res.headers['content-range']).toBe(
+        `bytes 0-${fileSize - 1}/${fileSize}`,
+      )
+    })
+
+    test('should 404 if video is not found', async () => {
+      await request(app.getHttpServer())
+        .get(`/stream/invalid-video-id`)
+        .expect(HttpStatus.NOT_FOUND)
+    })
+  })
 })
