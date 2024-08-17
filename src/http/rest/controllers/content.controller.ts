@@ -22,15 +22,24 @@ import { FileFieldsInterceptor } from '@nestjs/platform-express'
 import type { Request, Response } from 'express'
 import { diskStorage } from 'multer'
 
-import { PrismaService } from './prisma.service'
+import { VideoNotFoundException } from '@/core/exception/video-not-found.exception'
+import { ContentManagementService } from '@/core/service/content.management.service'
+import { MediaPlayerService } from '@/core/service/media-player.service'
+
+import { CreateVideoResponseDto } from '../dto/response/create-video-response.dto'
+import { RestResponseInterceptor } from '../interceptors/rest-response.interceptor'
 
 @Controller()
-export class AppController {
-  constructor(private readonly prismaService: PrismaService) {}
+export class ContentController {
+  constructor(
+    private readonly contentManagementService: ContentManagementService,
+    private readonly mediaPlayerService: MediaPlayerService,
+  ) {}
 
   @Post('video')
   @HttpCode(HttpStatus.CREATED)
   @UseInterceptors(
+    new RestResponseInterceptor(CreateVideoResponseDto),
     FileFieldsInterceptor(
       [
         {
@@ -75,7 +84,7 @@ export class AppController {
     },
     @UploadedFiles()
     files: { video?: Express.Multer.File[]; thumbnail?: Express.Multer.File[] },
-  ) {
+  ): Promise<CreateVideoResponseDto> {
     const videoFile = files.video?.[0]
     const thumbnailFile = files.thumbnail?.[0]
 
@@ -85,18 +94,13 @@ export class AppController {
       )
     }
 
-    return await this.prismaService.video.create({
-      data: {
-        id: randomUUID(),
-        title: currentData.title,
-        description: currentData.description,
-        url: videoFile.path,
-        thumbnailUrl: thumbnailFile.path,
-        sizeInKb: videoFile.size,
-        durationInSeconds: 100,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
+    return await this.contentManagementService.createContent({
+      title: currentData.title,
+      description: currentData.description,
+      thumbnailUrl: thumbnailFile.path,
+      url: videoFile.path,
+      durationInSeconds: 100,
+      sizeInKb: videoFile.size,
     })
   }
 
@@ -107,38 +111,44 @@ export class AppController {
     @Req() req: Request,
     @Res() res: Response,
   ): Promise<any> {
-    const video = await this.prismaService.video.findUnique({
-      where: { id: videoId },
-    })
+    try {
+      const videoUrl = await this.mediaPlayerService.prepareStreaming(videoId)
 
-    if (!video) {
-      throw new NotFoundException('Video not found')
-    }
+      if (!videoUrl) {
+        throw new NotFoundException('Video not found')
+      }
 
-    const videoPath = path.join(__dirname, '..', video.url)
-    const fileSize = fs.statSync(videoPath).size
-    const range = req.headers.range
+      const videoPath = path.join(__dirname, '..', '..', '..', '..', videoUrl)
+      const fileSize = fs.statSync(videoPath).size
+      const range = req.headers.range
 
-    if (range) {
-      const parts = range.replace(/bytes=/, '').split('-')
-      const start = parseInt(parts[0], 10)
-      const end = parts[1] ? parseInt(parts[1], 10) : fileSize - 1
-      const chunkSize = end - start + 1
-      const file = fs.createReadStream(videoPath, { start, end })
+      if (range) {
+        const parts = range.replace(/bytes=/, '').split('-')
+        const start = parseInt(parts[0], 10)
+        const end = parts[1] ? parseInt(parts[1], 10) : fileSize - 1
+        const chunkSize = end - start + 1
+        const file = fs.createReadStream(videoPath, { start, end })
 
-      res.writeHead(HttpStatus.PARTIAL_CONTENT, {
-        'Content-Range': `bytes ${start}-${end}/${fileSize}`,
-        'Accept-Ranges': 'bytes',
-        'Content-Length': chunkSize,
+        res.writeHead(HttpStatus.PARTIAL_CONTENT, {
+          'Content-Range': `bytes ${start}-${end}/${fileSize}`,
+          'Accept-Ranges': 'bytes',
+          'Content-Length': chunkSize,
+          'Content-Type': 'video/mp4',
+        })
+
+        return file.pipe(res)
+      }
+
+      return res.writeHead(HttpStatus.OK, {
+        'Content-Length': fileSize,
         'Content-Type': 'video/mp4',
       })
+    } catch (error) {
+      if (error instanceof VideoNotFoundException) {
+        throw new NotFoundException(error.message)
+      }
 
-      return file.pipe(res)
+      throw error
     }
-
-    return res.writeHead(HttpStatus.OK, {
-      'Content-Length': fileSize,
-      'Content-Type': 'video/mp4',
-    })
   }
 }

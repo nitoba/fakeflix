@@ -5,9 +5,9 @@ import { Test, TestingModule } from '@nestjs/testing'
 import request from 'supertest'
 
 import { AppModule } from '@/app.module'
-import { PrismaService } from '@/prisma.service'
+import { PrismaService } from '@/persistence//prisma/prisma.service'
 
-describe('VideoController (e2e)', () => {
+describe('ContentController (e2e)', () => {
   let moduleRef: TestingModule
   let app: INestApplication
   let prismaService: PrismaService
@@ -115,7 +115,7 @@ describe('VideoController (e2e)', () => {
       })
   })
 
-  describe('VideoController (e2e) Streaming', () => {
+  describe('ContentController (e2e) Streaming', () => {
     test('should streams a video', async () => {
       const { body: sampleVideo } = await request(app.getHttpServer())
         .post('/video')
