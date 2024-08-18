@@ -14,7 +14,7 @@
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "vitest run",
-    "test:e2e": "vitest run --config vitest.config.e2e.mts",
+    "test:e2e": "NODE_ENV=test vitest run --config vitest.config.e2e.mts",
     "test:e2e:watch": "vitest --config vitest.config.e2e.mts",
     "test:watch": "vitest",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand"
