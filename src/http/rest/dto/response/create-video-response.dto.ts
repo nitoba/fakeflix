@@ -14,6 +14,10 @@ export class CreateVideoResponseDto {
   @Expose()
   description: string
 
+  @IsString()
+  @Expose()
+  url: string
+
   @IsDate()
   @Expose()
   createdAt: Date

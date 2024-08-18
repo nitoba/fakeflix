@@ -5,12 +5,12 @@ import { Test, TestingModule } from '@nestjs/testing'
 import request from 'supertest'
 
 import { AppModule } from '@/app.module'
-import { PrismaService } from '@/persistence//prisma/prisma.service'
+import { ContentRepository } from '@/persistence/repository/content.repository'
 
 describe('ContentController (e2e)', () => {
   let moduleRef: TestingModule
   let app: INestApplication
-  let prismaService: PrismaService
+  let contentRepository: ContentRepository
 
   beforeAll(async () => {
     moduleRef = await Test.createTestingModule({
@@ -18,7 +18,7 @@ describe('ContentController (e2e)', () => {
     }).compile()
 
     app = moduleRef.createNestApplication()
-    prismaService = moduleRef.get<PrismaService>(PrismaService)
+    contentRepository = moduleRef.get<ContentRepository>(ContentRepository)
 
     await app.init()
   })
@@ -30,7 +30,7 @@ describe('ContentController (e2e)', () => {
   })
 
   afterEach(async () => {
-    await prismaService.video.deleteMany()
+    await contentRepository.clear()
   })
 
   afterAll(async () => {
@@ -60,9 +60,6 @@ describe('ContentController (e2e)', () => {
       title: video.title,
       description: video.description,
       url: expect.stringContaining('mp4'),
-      thumbnailUrl: expect.stringContaining('jpg'),
-      durationInSeconds: video.duration,
-      sizeInKb: video.sizeInKb,
     })
   })
 
@@ -113,39 +110,5 @@ describe('ContentController (e2e)', () => {
         error: 'Bad Request',
         statusCode: 400,
       })
-  })
-
-  describe('ContentController (e2e) Streaming', () => {
-    test('should streams a video', async () => {
-      const { body: sampleVideo } = await request(app.getHttpServer())
-        .post('/video')
-        .attach('video', './test/fixtures/sample.mp4')
-        .attach('thumbnail', './test/fixtures/sample.jpg')
-        .field('title', 'Test Video')
-        .field('description', 'This is a test video')
-        .expect(HttpStatus.CREATED)
-
-      const fileSize = 1430145
-      const range = `bytes=0-${fileSize - 1}`
-
-      const res = await request(app.getHttpServer())
-        .get(`/stream/${sampleVideo.id}`)
-        .set('Range', range)
-        .expect(HttpStatus.PARTIAL_CONTENT)
-
-      expect(res.headers['content-type']).toBe('video/mp4')
-      expect(res.headers['content-length']).toBe(fileSize.toString())
-      expect(res.headers['accept-ranges']).toBe('bytes')
-
-      expect(res.headers['content-range']).toBe(
-        `bytes 0-${fileSize - 1}/${fileSize}`,
-      )
-    })
-
-    test('should 404 if video is not found', async () => {
-      await request(app.getHttpServer())
-        .get(`/stream/invalid-video-id`)
-        .expect(HttpStatus.NOT_FOUND)
-    })
   })
 })

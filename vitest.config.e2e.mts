@@ -17,5 +17,10 @@ export default defineConfig({
     // setupFiles: ['./e2e/setup.e2e.ts'],
     // globalSetup: ['./e2e/global-setup.e2e.ts'],
     testTimeout: 10000,
+    // poolOptions: {
+    //   threads: {
+    //     singleThread: true,
+    //   },
+    // }, // uncomment this to run tests sequentially
   },
 })
