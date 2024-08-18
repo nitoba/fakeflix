@@ -36,6 +36,6 @@ export class ContentManagementService {
       }),
     })
 
-    return this.contentRepository.create(content)
+    // return this.contentRepository.create(content)
   }
 }

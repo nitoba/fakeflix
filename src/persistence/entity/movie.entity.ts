@@ -14,12 +14,12 @@ export class Movie extends DefaultEntity<Movie> {
   video: Video
 
   @OneToOne(() => Content, (content) => content.movie)
-  @JoinColumn()
+  @JoinColumn({ name: 'content_id' })
   content: Content
 
   @OneToOne(() => Thumbnail, {
     cascade: true,
   })
-  @JoinColumn()
+  @JoinColumn({ name: 'thumbnail_id' })
   thumbnail: Thumbnail
 }

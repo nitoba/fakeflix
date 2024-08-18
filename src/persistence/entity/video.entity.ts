@@ -17,10 +17,10 @@ export class Video extends DefaultEntity<Video> {
   duration: number
 
   @OneToOne(() => Movie, (movie) => movie.video)
-  @JoinColumn()
+  @JoinColumn({ name: 'movie_id' })
   movie: Movie
 
   @OneToOne(() => Episode, (episode) => episode.video)
-  @JoinColumn()
+  @JoinColumn({ name: 'episode_id' })
   episode: Episode
 }

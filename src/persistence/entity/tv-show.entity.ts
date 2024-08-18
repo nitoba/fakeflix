@@ -12,10 +12,10 @@ export class TvShow extends DefaultEntity<TvShow> {
   episodes: Episode[]
 
   @OneToOne(() => Content)
-  @JoinColumn()
+  @JoinColumn({ name: 'content_id' })
   content: Content
 
   @OneToOne(() => Thumbnail)
-  @JoinColumn()
+  @JoinColumn({ name: 'thumbnail_id' })
   thumbnail: Thumbnail
 }

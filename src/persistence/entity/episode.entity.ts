@@ -21,10 +21,11 @@ export class Episode extends DefaultEntity<Episode> {
   number: number
 
   @ManyToOne(() => TvShow, (tvShow) => tvShow.episodes)
+  @JoinColumn({ name: 'tv_show_id' })
   tvShow: TvShow
 
   @OneToOne(() => Thumbnail)
-  @JoinColumn()
+  @JoinColumn({ name: 'thumbnail_id' })
   thumbnail: Thumbnail
 
   @OneToOne(() => Video, (video) => video.episode)
