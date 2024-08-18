@@ -22,4 +22,9 @@ export class Movie extends DefaultEntity<Movie> {
   })
   @JoinColumn({ name: 'thumbnail_id' })
   thumbnail: Thumbnail
+
+  constructor(data: Partial<Movie>) {
+    super(data)
+    Object.assign(this, data)
+  }
 }

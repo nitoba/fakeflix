@@ -26,4 +26,9 @@ export class Content extends DefaultEntity<Content> {
     cascade: true,
   })
   tvShow?: TvShow
+
+  constructor(data: Partial<Content>) {
+    super(data)
+    Object.assign(this, data)
+  }
 }

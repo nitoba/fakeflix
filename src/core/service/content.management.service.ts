@@ -1,11 +1,13 @@
 import { Injectable } from '@nestjs/common'
 
+import { Content } from '@/persistence/entity/content.entity'
+import { Movie } from '@/persistence/entity/movie.entity'
+import { Thumbnail } from '@/persistence/entity/thumbnail.entity'
+import { Video } from '@/persistence/entity/video.entity'
 import { ContentRepository } from '@/persistence/repository/content.repository'
 
-import { ContentEntity } from '../entity/content.entity'
-import { MovieEntity } from '../entity/movie.entity'
-import { ThumbnailEntity } from '../entity/thumbnail.entity'
-import { VideoEntity } from '../entity/video.entity'
+import { ContentType } from '../enum/content-type.enum'
+
 export interface CreateContentData {
   title: string
   description: string
@@ -19,23 +21,27 @@ export interface CreateContentData {
 export class ContentManagementService {
   constructor(private readonly contentRepository: ContentRepository) {}
 
-  async createContent(data: CreateContentData) {
-    const content = ContentEntity.createNew({
-      title: data.title,
-      description: data.description,
-      type: 'MOVIE',
-      media: MovieEntity.createNew({
-        video: VideoEntity.createNew({
-          durationInSeconds: data.durationInSeconds,
-          sizeInKb: data.sizeInKb,
-          url: data.url,
-        }),
-        thumbnail: ThumbnailEntity.createNew({
-          url: data.thumbnailUrl,
+  async createMovie(createMovieData: CreateContentData) {
+    const contentEntity = new Content({
+      title: createMovieData.title,
+      description: createMovieData.description,
+      type: ContentType.MOVIE,
+      movie: new Movie({
+        video: new Video({
+          url: createMovieData.url,
+          duration: 10,
+          sizeInKb: createMovieData.sizeInKb,
         }),
       }),
     })
 
-    // return this.contentRepository.create(content)
+    if (createMovieData.thumbnailUrl) {
+      contentEntity.movie.thumbnail = new Thumbnail({
+        url: createMovieData.thumbnailUrl,
+      })
+    }
+    const content = await this.contentRepository.save(contentEntity)
+
+    return content
   }
 }

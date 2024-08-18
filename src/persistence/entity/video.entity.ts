@@ -23,4 +23,9 @@ export class Video extends DefaultEntity<Video> {
   @OneToOne(() => Episode, (episode) => episode.video)
   @JoinColumn({ name: 'episode_id' })
   episode: Episode
+
+  constructor(data: Partial<Video>) {
+    super(data)
+    Object.assign(this, data)
+  }
 }

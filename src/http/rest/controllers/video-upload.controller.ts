@@ -22,7 +22,7 @@ import { CreateVideoResponseDto } from '../dto/response/create-video-response.dt
 import { RestResponseInterceptor } from '../interceptors/rest-response.interceptor'
 
 @Controller()
-export class ContentController {
+export class VideoUploadController {
   constructor(
     private readonly contentManagementService: ContentManagementService,
   ) {}
@@ -85,25 +85,35 @@ export class ContentController {
       )
     }
 
-    const createdContent = await this.contentManagementService.createContent({
+    const MAX_FILE_SIZE = 1024 * 1024 * 1024 // 1 gigabyte
+
+    if (videoFile.size > MAX_FILE_SIZE) {
+      throw new BadRequestException('File size exceeds the limit.')
+    }
+    const MAX_THUMBNAIL_SIZE = 1024 * 1024 * 10 // 10 megabytes
+
+    if (thumbnailFile.size > MAX_THUMBNAIL_SIZE) {
+      throw new BadRequestException('Thumbnail size exceeds the limit.')
+    }
+
+    const createdMovie = await this.contentManagementService.createMovie({
       title: currentData.title,
       description: currentData.description,
       thumbnailUrl: thumbnailFile.path,
       url: videoFile.path,
-      durationInSeconds: 100,
+      durationInSeconds: 10,
       sizeInKb: videoFile.size,
     })
-    const video = createdContent?.media?.video
-    if (!video) {
-      throw new BadRequestException('Video must be present')
-    }
     return {
-      id: createdContent.id,
-      title: createdContent.title,
-      description: createdContent.description,
-      url: video.url,
-      createdAt: createdContent.createdAt,
-      updatedAt: createdContent.updatedAt,
+      id: createdMovie.id,
+      title: createdMovie.title,
+      description: createdMovie.description,
+      url: createdMovie.movie.video.url,
+      thumbnailUrl: createdMovie.movie.thumbnail?.url,
+      sizeInKb: createdMovie.movie.video.sizeInKb,
+      duration: createdMovie.movie.video.duration,
+      createdAt: createdMovie.createdAt,
+      updatedAt: createdMovie.updatedAt,
     }
   }
 }

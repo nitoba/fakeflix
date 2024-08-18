@@ -6,4 +6,9 @@ import { DefaultEntity } from '@/infra/module/typeorm/entity/default.entity'
 export class Thumbnail extends DefaultEntity<Thumbnail> {
   @Column()
   url: string
+
+  constructor(data: Partial<Thumbnail>) {
+    super(data)
+    Object.assign(this, data)
+  }
 }

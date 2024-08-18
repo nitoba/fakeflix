@@ -14,7 +14,7 @@ export default defineConfig({
     exclude: ['node_modules', 'data'],
     globals: true,
     root: './',
-    setupFiles: ['./test/e2e/setup.e2e.ts'],
+    setupFiles: ['./test/e2e/setup-typeorm.e2e.ts'],
     globalSetup: ['./test/e2e/global-setup.e2e.ts'],
     testTimeout: 10000,
     // poolOptions: {

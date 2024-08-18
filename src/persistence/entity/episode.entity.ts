@@ -30,4 +30,9 @@ export class Episode extends DefaultEntity<Episode> {
 
   @OneToOne(() => Video, (video) => video.episode)
   video: Video
+
+  constructor(data: Partial<Episode>) {
+    super(data)
+    Object.assign(this, data)
+  }
 }

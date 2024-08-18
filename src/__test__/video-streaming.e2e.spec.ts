@@ -7,7 +7,7 @@ import { AppModule } from '@/app.module'
 import { ContentManagementService } from '@/core/service/content.management.service'
 import { VideoRepository } from '@/persistence/repository/video.repository'
 
-describe('ContentController (e2e) Streaming', () => {
+describe('MediaPlayerController (e2e)', () => {
   let moduleRef: TestingModule
   let app: INestApplication
   let contentManagementService: ContentManagementService
@@ -34,7 +34,7 @@ describe('ContentController (e2e) Streaming', () => {
   })
 
   afterEach(async () => {
-    await videoRepository.clear()
+    await videoRepository.deleteAll()
   })
 
   afterAll(async () => {
@@ -42,7 +42,7 @@ describe('ContentController (e2e) Streaming', () => {
   })
 
   test('should streams a video', async () => {
-    const createContent = await contentManagementService.createContent({
+    const createContent = await contentManagementService.createMovie({
       title: 'Test Video',
       description: 'This is a test video',
       url: './test/fixtures/sample.mp4',
@@ -55,7 +55,7 @@ describe('ContentController (e2e) Streaming', () => {
     const range = `bytes=0-${fileSize - 1}`
 
     const res = await request(app.getHttpServer())
-      .get(`/stream/${createContent?.media?.video.id}`)
+      .get(`/stream/${createContent?.movie?.video.id}`)
       .set('Range', range)
       .expect(HttpStatus.PARTIAL_CONTENT)
 

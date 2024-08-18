@@ -10,7 +10,7 @@ const createDatabaseModule = async () => {
   return await NestFactory.createApplicationContext(
     PersistenceModule.forRoot({
       // eslint-disable-next-line n/no-path-concat
-      migrations: [__dirname + '/migrations/*'],
+      migrations: [__dirname + '/migrations/**/*.{ts,js}'],
     }),
   )
 }
@@ -28,6 +28,7 @@ export const migrate = async () => {
     options,
   })
   await migrationModule.get(TypeOrmMigrationService).migrate()
+  return await migrationModule.get(TypeOrmMigrationService).getDataSource()
 }
 
 export const getDataSource = async () => {

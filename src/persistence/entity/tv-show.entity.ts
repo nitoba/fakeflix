@@ -18,4 +18,9 @@ export class TvShow extends DefaultEntity<TvShow> {
   @OneToOne(() => Thumbnail)
   @JoinColumn({ name: 'thumbnail_id' })
   thumbnail: Thumbnail
+
+  constructor(data: Partial<TvShow>) {
+    super(data)
+    Object.assign(this, data)
+  }
 }
