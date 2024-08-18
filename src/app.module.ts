@@ -5,7 +5,6 @@ import { MediaPlayerService } from './core/service/media-player.service'
 import { ContentController } from './http/rest/controllers/content.controller'
 import { MediaPlayerController } from './http/rest/controllers/media-player.controller'
 import { ConfigModule } from './infra/module/config/config.module'
-import { PrismaService } from './persistence/prisma/prisma.service'
 import { ContentRepository } from './persistence/repository/content.repository'
 import { VideoRepository } from './persistence/repository/video.repository'
 
@@ -13,7 +12,6 @@ import { VideoRepository } from './persistence/repository/video.repository'
   imports: [ConfigModule.forRoot()],
   controllers: [ContentController, MediaPlayerController],
   providers: [
-    PrismaService,
     ContentManagementService,
     MediaPlayerService,
     VideoRepository,
