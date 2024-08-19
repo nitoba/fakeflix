@@ -22,6 +22,7 @@
     "noFallthroughCasesInSwitch": false,
     "paths": {
       "@/contentModule/*": ["./src/module/content/*"],
+      "@/sharedModules/*": ["./src/module/shared/module/*"],
       "@/*": ["./src/*"],
       "@/resources/*": ["./resources/*"]
     },

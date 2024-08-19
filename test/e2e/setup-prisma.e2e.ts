@@ -3,7 +3,7 @@ import { randomUUID } from 'node:crypto'
 
 import { PrismaClient } from '@prisma/client'
 
-import { factory } from '@/contentModule/infra/module/config/util/config.factory'
+import { factory } from '@/shared/module/config/util/config.factory'
 
 const env = factory()
 
