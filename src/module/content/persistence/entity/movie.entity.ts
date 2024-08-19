@@ -1,6 +1,6 @@
 import { Column, Entity, JoinColumn, OneToOne } from 'typeorm'
 
-import { DefaultEntity } from '@/infra/module/typeorm/entity/default.entity'
+import { DefaultEntity } from '@/contentModule/infra/module/typeorm/entity/default.entity'
 
 import { Content } from './content.entity'
 import { Thumbnail } from './thumbnail.entity'

@@ -2,9 +2,9 @@ import { NestFactory } from '@nestjs/core'
 import { DataSourceOptions } from 'typeorm'
 import { createPostgresDatabase } from 'typeorm-extension'
 
-import { ConfigService } from '@/infra/module/config/service/config.service'
-import { TypeOrmMigrationService } from '@/infra/module/typeorm/service/typeorm-migration.service'
-import { PersistenceModule } from '@/persistence/persistence.module'
+import { ConfigService } from '@/contentModule/infra/module/config/service/config.service'
+import { TypeOrmMigrationService } from '@/contentModule/infra/module/typeorm/service/typeorm-migration.service'
+import { PersistenceModule } from '@/contentModule/persistence/persistence.module'
 
 const createDatabaseModule = async () => {
   return await NestFactory.createApplicationContext(

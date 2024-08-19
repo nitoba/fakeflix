@@ -12,8 +12,8 @@ import type { Request, Response } from 'express'
 import fs from 'fs'
 import path from 'path'
 
-import { VideoNotFoundException } from '@/core/exception/video-not-found.exception'
-import { MediaPlayerService } from '@/core/service/media-player.service'
+import { VideoNotFoundException } from '@/contentModule/core/exception/video-not-found.exception'
+import { MediaPlayerService } from '@/contentModule/core/service/media-player.service'
 
 @Controller('stream')
 export class MediaPlayerController {

@@ -21,7 +21,8 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
-      "@/*": ["src/*"],
+      "@/contentModule/*": ["./src/module/content/*"],
+      "@/*": ["./src/*"],
       "@/resources/*": ["./resources/*"]
     },
     "types": ["vitest/globals"]

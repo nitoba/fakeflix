@@ -5,10 +5,11 @@ import nock from 'nock'
 import request from 'supertest'
 
 import { AppModule } from '@/app.module'
-import { ContentManagementService } from '@/core/service/content.management.service'
-import { ContentRepository } from '@/persistence/repository/content.repository'
-import { MovieRepository } from '@/persistence/repository/movie.repository'
-import { VideoRepository } from '@/persistence/repository/video.repository'
+import { ContentManagementService } from '@/contentModule/core/service/content.management.service'
+import { VideoRepository } from '@/contentModule/persistence/repository/video.repository'
+
+import { ContentRepository } from '../persistence/repository/content.repository'
+import { MovieRepository } from '../persistence/repository/movie.repository'
 
 describe('MediaPlayerController (e2e)', () => {
   let moduleRef: TestingModule

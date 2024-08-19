@@ -6,9 +6,9 @@ import nock from 'nock'
 import request from 'supertest'
 
 import { AppModule } from '@/app.module'
-import { ContentRepository } from '@/persistence/repository/content.repository'
-import { MovieRepository } from '@/persistence/repository/movie.repository'
-import { VideoRepository } from '@/persistence/repository/video.repository'
+import { ContentRepository } from '@/contentModule/persistence/repository/content.repository'
+import { MovieRepository } from '@/contentModule/persistence/repository/movie.repository'
+import { VideoRepository } from '@/contentModule/persistence/repository/video.repository'
 
 describe('VideoUploadController (e2e)', () => {
   let moduleRef: TestingModule

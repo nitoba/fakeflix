@@ -1,6 +1,6 @@
 import { DynamicModule, Module } from '@nestjs/common'
 
-import { TypeOrmPersistenceModule } from '@/infra/module/typeorm/typeorm-persistence.module'
+import { TypeOrmPersistenceModule } from '@/contentModule/infra/module/typeorm/typeorm-persistence.module'
 
 import { Content } from './entity/content.entity'
 import { Episode } from './entity/episode.entity'

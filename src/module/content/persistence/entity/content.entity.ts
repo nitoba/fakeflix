@@ -1,7 +1,7 @@
 import { Column, Entity, OneToOne } from 'typeorm'
 
-import { ContentType } from '@/core/enum/content-type.enum'
-import { DefaultEntity } from '@/infra/module/typeorm/entity/default.entity'
+import { ContentType } from '@/contentModule/core/enum/content-type.enum'
+import { DefaultEntity } from '@/contentModule/infra/module/typeorm/entity/default.entity'
 
 import { Movie } from './movie.entity'
 import { TvShow } from './tv-show.entity'

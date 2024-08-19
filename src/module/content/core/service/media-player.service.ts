@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 
-import { VideoRepository } from '@/persistence/repository/video.repository'
+import { VideoRepository } from '@/contentModule/persistence/repository/video.repository'
 
 import { VideoNotFoundException } from '../exception/video-not-found.exception'
 

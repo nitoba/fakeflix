@@ -16,7 +16,7 @@ import { FileFieldsInterceptor } from '@nestjs/platform-express'
 import type { Request } from 'express'
 import { diskStorage } from 'multer'
 
-import { ContentManagementService } from '@/core/service/content.management.service'
+import { ContentManagementService } from '@/contentModule/core/service/content.management.service'
 
 import { CreateVideoResponseDto } from '../dto/response/create-video-response.dto'
 import { RestResponseInterceptor } from '../interceptors/rest-response.interceptor'

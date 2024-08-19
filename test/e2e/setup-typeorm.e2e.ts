@@ -1,7 +1,7 @@
 import { execSync } from 'node:child_process'
 import { randomUUID } from 'node:crypto'
 
-import { factory } from '@/infra/module/config/util/config.factory'
+import { factory } from '@/contentModule/infra/module/config/util/config.factory'
 
 const env = factory()
 
