@@ -16,8 +16,14 @@ export const databaseSchema = z.object({
   username: z.string(),
 })
 
+export const movieDbSchema = z.object({
+  url: z.string().startsWith('https://api.themoviedb.org/3'),
+  apiToken: z.string(),
+})
+
 export const configSchema = z.object({
   env: environmentSchema,
   port: z.coerce.number().positive().int(),
   database: databaseSchema,
+  movieDb: movieDbSchema,
 })

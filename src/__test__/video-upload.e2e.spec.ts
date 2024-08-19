@@ -2,6 +2,7 @@ import fs from 'node:fs'
 
 import { HttpStatus, INestApplication } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
+import nock from 'nock'
 import request from 'supertest'
 
 import { AppModule } from '@/app.module'
@@ -27,6 +28,47 @@ describe('VideoUploadController (e2e)', () => {
     movieRepository = moduleRef.get<MovieRepository>(MovieRepository)
 
     await app.init()
+
+    // nock has support to native fetch only in 14.0.0-beta.6
+    // https://github.com/nock/nock/issues/2397
+    nock('https://api.themoviedb.org/3', {
+      encodedQueryParams: true,
+      reqheaders: {
+        Authorization: (): boolean => true,
+      },
+    })
+      .defaultReplyHeaders({ 'access-control-allow-origin': '*' })
+      .get(`/search/keyword`)
+      .query({
+        query: 'Test Video',
+        page: '1',
+      })
+      .reply(200, {
+        results: [
+          {
+            id: '1',
+          },
+        ],
+      })
+
+    nock('https://api.themoviedb.org/3', {
+      encodedQueryParams: true,
+      reqheaders: {
+        Authorization: (): boolean => true,
+      },
+    })
+      .defaultReplyHeaders({ 'access-control-allow-origin': '*' })
+      .get(`discover/movie`)
+      .query({
+        with_keywords: '1',
+      })
+      .reply(200, {
+        results: [
+          {
+            vote_average: 8.5,
+          },
+        ],
+      })
   })
 
   beforeEach(async () => {
@@ -44,6 +86,7 @@ describe('VideoUploadController (e2e)', () => {
   afterAll(async () => {
     moduleRef.close()
     fs.rmSync('./uploads', { recursive: true, force: true })
+    nock.cleanAll()
   })
 
   test('should upload a video', async () => {

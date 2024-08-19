@@ -19,6 +19,7 @@ export class TypeOrmPersistenceModule {
           imports: [ConfigModule.forRoot()],
           inject: [ConfigService],
           useFactory: async (configService: ConfigService) => {
+            console.log(configService.get('database'))
             return {
               type: 'postgres',
               logging: false,

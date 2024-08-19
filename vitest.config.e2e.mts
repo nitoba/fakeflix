@@ -17,10 +17,10 @@ export default defineConfig({
     setupFiles: ['./test/e2e/setup-typeorm.e2e.ts'],
     globalSetup: ['./test/e2e/global-setup.e2e.ts'],
     testTimeout: 10000,
-    // poolOptions: {
-    //   threads: {
-    //     singleThread: true,
-    //   },
-    // }, // uncomment this to run tests sequentially
+    poolOptions: {
+      threads: {
+        singleThread: true,
+      },
+    }, // uncomment this to run tests sequentially
   },
 })
