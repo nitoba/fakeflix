@@ -1,4 +1,6 @@
+import { ApolloDriver } from '@nestjs/apollo'
 import { Module } from '@nestjs/common'
+import { GraphQLModule } from '@nestjs/graphql'
 import { JwtModule } from '@nestjs/jwt'
 
 import { PersistenceModule } from '@/sharedModules/persistence/prisma/persistence.module'
@@ -14,6 +16,10 @@ import { UserRepository } from './persistence/repository/user.repository'
 
 @Module({
   imports: [
+    GraphQLModule.forRoot({
+      autoSchemaFile: true,
+      driver: ApolloDriver,
+    }),
     JwtModule.register({
       secret: jwtConstants.secret,
       signOptions: { expiresIn: '60m' },
