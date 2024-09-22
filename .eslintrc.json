@@ -8,7 +8,28 @@
     "no-use-before-define": "off",
     "no-useless-constructor": "off",
     "simple-import-sort/imports": "error",
-    "simple-import-sort/exports": "error"
+    "simple-import-sort/exports": "error",
+    "import/no-restricted-paths": [
+      "error",
+      {
+        "zones": [
+          { "target": "./src/shared", "from": "./src/module/content" },
+          {
+            "target": "./src/shared",
+            "from": "./src/module/identity"
+          },
+          { "target": "./src/module/content", "from": "./src/module/identity" },
+          { "target": "./src/module/identity", "from": "./src/module/content" }
+        ]
+      }
+    ]
   },
-  "plugins": ["simple-import-sort"]
+  "settings": {
+    "import/resolver": {
+      "typescript": {
+        "project": "./tsconfig.json"
+      }
+    }
+  },
+  "plugins": ["simple-import-sort", "import", "no-relative-import-paths"]
 }
