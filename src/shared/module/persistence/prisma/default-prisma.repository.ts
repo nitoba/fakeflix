@@ -4,7 +4,7 @@ import { Prisma } from '@prisma/client'
 import {
   PersistenceClientException,
   PersistenceInternalException,
-} from '@/sharedLibs/exception/persistence.exception'
+} from '@/sharedLibs/core/exception/persistence.exception'
 
 @Injectable()
 export abstract class DefaultPrismaRepository {

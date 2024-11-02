@@ -17,7 +17,7 @@ export class RestResponseInterceptor<T extends object>
 
   intercept(_context: ExecutionContext, next: CallHandler): any {
     return next.handle().pipe(
-      switchMap(async (data: any) => {
+      switchMap(async (data: T) => {
         const transformeData = plainToInstance(
           this.dto,
           instanceToPlain(data),
