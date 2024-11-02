@@ -1,8 +1,9 @@
-import { Injectable } from '@nestjs/common'
+import { Inject, Injectable } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import bcrypt from 'bcryptjs'
 
 import { UserRepository } from '@/identityModule/persistence/repository/user.repository'
+import { BillingSubscriptionStatusApi } from '@/sharedModules/integration/interface/billing-integration.interface'
 
 import { UserUnauthorizedException } from '../exception/user-unauthorized.exception'
 
@@ -16,6 +17,8 @@ export class AuthService {
   constructor(
     private readonly userRepository: UserRepository,
     private readonly jwtService: JwtService,
+    @Inject(BillingSubscriptionStatusApi)
+    private readonly subscriptionServiceClient: BillingSubscriptionStatusApi,
   ) {}
 
   async signIn(
@@ -25,6 +28,13 @@ export class AuthService {
     const user = await this.userRepository.findOneBy({ email })
     if (!user || !(await this.comparePassword(password, user.password))) {
       throw new UserUnauthorizedException(`Cannot authorize user: ${email}`)
+    }
+    const isSubscriptionActive =
+      await this.subscriptionServiceClient.isUserSubscriptionActive(user.id)
+    if (!isSubscriptionActive) {
+      throw new UserUnauthorizedException(
+        `User subscription is not active: ${email}`,
+      )
     }
     // TODO add more fields to the JWT
     const payload = { sub: user.id }
